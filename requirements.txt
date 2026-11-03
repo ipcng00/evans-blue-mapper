@@ -1,0 +1,8 @@
+# Tested with Python 3.12 (Anaconda) on Windows 11.
+# tkinter is included in the standard Python installers for Windows and macOS.
+numpy>=1.26,<2
+scipy>=1.13
+scikit-image>=0.24
+matplotlib>=3.9
+pillow>=10.4
+pandas>=2.2

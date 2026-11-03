@@ -1,0 +1,58 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "evans-blue-mapper: contour-based template registration and semi-automated detection of Evans blue extravasation spots"
+type: software
+version: 1.0.0
+date-released: 2026-11-03
+license: MIT
+repository-code: "https://github.com/GITHUB-ID/evans-blue-mapper"
+keywords:
+  - Evans blue
+  - acupoint
+  - neurogenic inflammation
+  - image registration
+  - thin-plate spline
+authors:
+  - family-names: Cho
+    given-names: Seong Jin
+    orcid: "https://orcid.org/0000-0003-4640-7407"
+    affiliation: "Korea Institute of Oriental Medicine"
+  - family-names: Kang
+    given-names: Nari
+    orcid: "https://orcid.org/0009-0005-6199-0604"
+    affiliation: "Department of Physiology, Yonsei University College of Medicine"
+  - family-names: Choi
+    given-names: Kwang-Ho
+    orcid: "https://orcid.org/0000-0002-8594-1189"
+    affiliation: "Korea Institute of Oriental Medicine"
+  - family-names: Kang
+    given-names: Suk-Yun
+    orcid: "https://orcid.org/0000-0001-6812-9503"
+    affiliation: "Korea Institute of Oriental Medicine"
+  - family-names: Kim
+    given-names: Hee Young
+    orcid: "https://orcid.org/0000-0002-2495-9115"
+    affiliation: "Department of Physiology, Yonsei University College of Medicine"
+  - family-names: Ryu
+    given-names: Yeonhee
+    orcid: "https://orcid.org/0000-0001-7953-7094"
+    affiliation: "Korea Institute of Oriental Medicine"
+preferred-citation:
+  type: article
+  title: "Standardized mapping of Evans blue extravasation spots: contour-based template registration and semi-automated detection"
+  journal: "Integrative Medicine Research"
+  year: 2026
+  status: submitted
+  authors:
+    - family-names: Cho
+      given-names: Seong Jin
+    - family-names: Kang
+      given-names: Nari
+    - family-names: Choi
+      given-names: Kwang-Ho
+    - family-names: Kang
+      given-names: Suk-Yun
+    - family-names: Kim
+      given-names: Hee Young
+    - family-names: Ryu
+      given-names: Yeonhee

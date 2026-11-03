@@ -1,0 +1,21 @@
+{
+ "_comment": "검증용 해부학 표지점 목록 (부위별). 알고리즘이 쓰는 윤곽 랜드마크(발끝 tip, 손목 폭 최소점, 기시부)는 넣지 않는다. 연구팀이 실제 사진에서 일관되게 찍을 수 있는 점으로 수정해서 쓰세요.",
+ "palmar": [
+  "D2 digit tip (claw base)", "D3 digit tip (claw base)", "D4 digit tip (claw base)", "D5 digit tip (claw base)",
+  "Interdigital pad 1 center", "Interdigital pad 2 center", "Interdigital pad 3 center",
+  "Thenar pad center", "Hypothenar pad center", "Distal wrist crease midpoint"
+ ],
+ "dorsal": [
+  "D2 digit tip (claw base)", "D3 digit tip (claw base)", "D4 digit tip (claw base)", "D5 digit tip (claw base)",
+  "MCP joint D2", "MCP joint D3", "MCP joint D4", "MCP joint D5",
+  "Wrist dorsal midpoint"
+ ],
+ "medial": [
+  "Distal digit tip (most distal claw base)", "Hypothenar pad edge", "Ulnar styloid prominence",
+  "Mid-forearm ulnar border", "Olecranon / elbow point"
+ ],
+ "lateral": [
+  "Distal digit tip (most distal claw base)", "Thumb (pollex) base", "Radial styloid prominence",
+  "Mid-forearm radial border", "Elbow lateral point"
+ ]
+}

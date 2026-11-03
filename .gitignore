@@ -1,0 +1,21 @@
+# --- Image data are NOT published -------------------------------------------
+# Only the templates inside "mapping data" are tracked.
+mapping data/*
+!mapping data/templates/
+mapping data/templates/_backup*/
+*.zip
+
+# --- Generated outputs ------------------------------------------------------
+results/
+*_registered/
+annotations/
+
+# --- Python / OS / editors --------------------------------------------------
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.idea/
+.vscode/
+Thumbs.db
+desktop.ini
+.DS_Store
