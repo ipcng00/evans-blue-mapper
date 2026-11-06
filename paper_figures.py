@@ -367,8 +367,8 @@ def fig4():
     """정합 정확도"""
     per = pd.read_csv(os.path.join(RES, "register_per_image.csv"))
     pairs = pd.read_csv(os.path.join(RES, "register_pairs.csv"))
-    if "same_animal_possible" in pairs:
-        pairs = pairs[~pairs.same_animal_possible]          # 같은 동물의 두 자세 사진 쌍 제외
+    if "same_animal" in pairs:
+        pairs = pairs[~pairs.same_animal]                   # 같은 동물을 두 자세로 찍은 사진 쌍 제외
     dfm = pd.read_csv(os.path.join(RES, "deform.csv"))
     pose = pd.read_csv(os.path.join(RES, "pose.csv"))
     M = V.METHODS

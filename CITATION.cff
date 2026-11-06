@@ -5,7 +5,7 @@ type: software
 version: 1.0.0
 date-released: 2026-11-03
 license: MIT
-repository-code: "https://github.com/GITHUB-ID/evans-blue-mapper"
+repository-code: "https://github.com/ipcng00/evans-blue-mapper"
 keywords:
   - Evans blue
   - acupoint
@@ -16,6 +16,14 @@ authors:
   - family-names: Cho
     given-names: Seong Jin
     orcid: "https://orcid.org/0000-0003-4640-7407"
+    affiliation: "Korea Institute of Oriental Medicine"
+  - family-names: Kim
+    given-names: Suhyun
+    orcid: "https://orcid.org/0000-0001-5006-3286"
+    affiliation: "Korea Institute of Oriental Medicine"
+  - family-names: Yeon
+    given-names: Sunhee
+    orcid: "https://orcid.org/0000-0003-3078-4419"
     affiliation: "Korea Institute of Oriental Medicine"
   - family-names: Kang
     given-names: Nari
@@ -46,6 +54,10 @@ preferred-citation:
   authors:
     - family-names: Cho
       given-names: Seong Jin
+    - family-names: Kim
+      given-names: Suhyun
+    - family-names: Yeon
+      given-names: Sunhee
     - family-names: Kang
       given-names: Nari
     - family-names: Choi

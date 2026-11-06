@@ -18,6 +18,8 @@ If you use this software, please cite the article (see [Citation](#citation)).
 Python 3.10 or later (tested with Python 3.12 on Windows 11).
 
 ```
+git clone https://github.com/ipcng00/evans-blue-mapper.git
+cd evans-blue-mapper
 pip install -r requirements.txt
 ```
 
@@ -112,7 +114,7 @@ Code comments are partly in Korean.
 
 ## Citation
 
-Cho SJ, Kang N, Choi KH, Kang SY, Kim HY, Ryu Y. Standardized mapping of Evans blue extravasation spots: contour-based template registration and semi-automated detection. *Integrative Medicine Research* (submitted).
+Cho SJ, Kim S, Yeon S, Kang N, Choi KH, Kang SY, Kim HY, Ryu Y. Standardized mapping of Evans blue extravasation spots: contour-based template registration and semi-automated detection. *Integrative Medicine Research* (submitted).
 
 Software DOI: to be added (Zenodo).
 

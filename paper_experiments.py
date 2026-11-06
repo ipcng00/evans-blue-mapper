@@ -146,7 +146,7 @@ def exp_register(out):
         for m in V.METHODS:
             for i, j in itertools.combinations(range(len(items)), 2):
                 pairs.append(dict(view=view, method=m, i=i, j=j, same_segment=segs[i] == segs[j],
-                                  same_animal_possible=same_animal_possible(segs[i], items[i][2], segs[j], items[j][2]),
+                                  same_animal=same_animal(items[i][3], items[j][3]),
                                   ncc_limb=V.ncc(hp[m][i], hp[m][j], limb & hv[m][i] & hv[m][j]),
                                   blue_dice=V.dice(blues[m][i], blues[m][j]),
                                   blue_dice_smooth=V.dice(ndi.gaussian_filter(blues[m][i].astype(float), 6) > 0.15,
@@ -158,29 +158,32 @@ def exp_register(out):
     summarize_register(out, per, pairs)
 
 
-def same_animal_possible(seg_i, folder_i, seg_j, folder_j):
-    """같은 분절에서 '<폴더>_1', '<폴더>_2' 처럼 같은 동물을 다른 자세로 찍은 폴더 쌍 (예: C8 내측 _1/_2)"""
-    base = lambda f: re.sub(r"_\d+$", "", f)
-    return seg_i == seg_j and folder_i != folder_j and base(folder_i) == base(folder_j)
+# 같은 동물을 다른 자세로 찍은 사진 쌍 (C8 내측 _1/_2, 실험자 확인)
+SAME_ANIMAL = [("그림51", "그림62"), ("그림50", "그림63"), ("그림52", "그림64"), ("그림53", "그림65")]
+
+
+def same_animal(path_i, path_j):
+    stem = lambda p: os.path.splitext(os.path.basename(p))[0]
+    return tuple(sorted((stem(path_i), stem(path_j)))) in SAME_ANIMAL
 
 
 def exp_resummarize(out):
-    """저장된 CSV로 쌍 비교 요약만 다시 계산 (같은 동물 가능 쌍 표시·제외)"""
+    """저장된 CSV로 쌍 비교 요약만 다시 계산 (같은 동물 쌍 표시·제외)"""
     import pandas as pd
     per = pd.read_csv(os.path.join(out, "register_per_image.csv")).to_dict("records")
     pairs = pd.read_csv(os.path.join(out, "register_pairs.csv")).to_dict("records")
     first = V.METHODS[0]
     order = {v: [r["image"] for r in per if r["view"] == v and r["method"] == first] for v in LM.VIEWS}
     for r in pairs:
-        a, b = order[r["view"]][int(r["i"])].split(os.sep), order[r["view"]][int(r["j"])].split(os.sep)
-        r["same_animal_possible"] = same_animal_possible(a[0], a[1], b[0], b[1])
+        r.pop("same_animal_possible", None)
+        r["same_animal"] = same_animal(order[r["view"]][int(r["i"])], order[r["view"]][int(r["j"])])
     write(os.path.join(out, "register_pairs.csv"), pairs)
     summarize_register(out, per, pairs)
-    print("pairs excluded (same animal possible):", sum(r["same_animal_possible"] for r in pairs) // len(V.METHODS))
+    print("pairs excluded (same animal):", sum(r["same_animal"] for r in pairs) // len(V.METHODS))
 
 
 def summarize_register(out, per, pairs):
-    pairs = [r for r in pairs if not r.get("same_animal_possible", False)]
+    pairs = [r for r in pairs if not r.get("same_animal", False)]
     rows = []
     for view in list(LM.VIEWS) + ["all"]:
         prop = {v: proposed(v) for v in LM.VIEWS}
