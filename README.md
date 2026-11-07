@@ -116,7 +116,7 @@ Code comments are partly in Korean.
 
 Cho SJ, Kim S, Yeon S, Kang N, Choi KH, Kang SY, Kim HY, Ryu Y. Standardized mapping of Evans blue extravasation spots: contour-based template registration and semi-automated detection. *Integrative Medicine Research* (submitted).
 
-Software DOI: to be added (Zenodo).
+Software DOI: [10.5281/zenodo.24026503](https://doi.org/10.5281/zenodo.24026503) (Zenodo).
 
 ## License
 

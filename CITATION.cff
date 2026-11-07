@@ -5,6 +5,11 @@ type: software
 version: 1.0.0
 date-released: 2026-11-03
 license: MIT
+doi: "10.5281/zenodo.24026503"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.24026503"
+    description: "Archived source code (Zenodo)"
 repository-code: "https://github.com/ipcng00/evans-blue-mapper"
 keywords:
   - Evans blue
