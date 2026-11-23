@@ -82,13 +82,16 @@ Results are written to `<view folder>_registered/` next to the input folder:
 
 | Script | Purpose |
 |---|---|
-| `validation_eval.py` | Evaluates manual annotations: landmark target registration error for each registration model, inter-rater agreement, and precision, recall, F1 and ICC of automatic spot detection. |
+| `validation_eval.py` | Evaluates manual annotations: landmark deviation (leave-one-out) for each registration model, inter-rater agreement, and precision, recall, F1 and ICC of automatic spot detection. |
 | `limb_validation.py` | Comparison registration models (axis, similarity, affine, TPS) and evaluation metrics. |
 | `paper_experiments.py` | Computational experiments of the article (heterogeneity, registration comparison, simulated deformations, pose/resolution/brightness robustness, synthetic spots, parameter sensitivity). |
+| `paper_extra_analyses.py` | Sensitivity analyses of the article (per-photograph tests, identical matching rules for spot agreement, proposed configuration). |
 | `paper_figures.py` | Figures of the article from the experiment results. |
 
 ```
 python paper_experiments.py all --out results
+python validation_eval.py --out results/validation
+python paper_extra_analyses.py --root .
 python paper_figures.py --root . all
 ```
 

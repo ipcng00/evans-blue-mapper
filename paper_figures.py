@@ -1,6 +1,6 @@
 """
 논문 그림 (Fig 1~6, Supplement) - 결과 폴더(results)의 실험 결과로 그린다.
-저장: <IMR>/figures/FigN.tif (500 dpi, LZW) + 미리보기 FigN.jpg
+저장: <IMR>/figures/FigN.tif (600 dpi, LZW) + 미리보기 FigN.jpg
 사용 예) python paper_figures.py --root "D:/4. 논문/조성진/mapping Evans blue spots/IMR" fig1 fig2
 """
 import warnings
@@ -40,7 +40,12 @@ EXAMPLE = ("palmar", "C7")       # 예시 그림에 쓰는 신경·부위 (paper
 
 def save(fig, name):
     os.makedirs(FIG, exist_ok=True)
-    fig.savefig(os.path.join(FIG, name + ".tif"), dpi=500, pil_kwargs={"compression": "tiff_lzw"})
+    import io
+    from PIL import Image
+    buf = io.BytesIO()                                   # 투명 배경 없이 흰 바탕 RGB TIFF 로 저장
+    fig.savefig(buf, format="png", dpi=600, facecolor="white")
+    buf.seek(0)
+    Image.open(buf).convert("RGB").save(os.path.join(FIG, name + ".tif"), dpi=(600, 600), compression="tiff_lzw")
     fig.savefig(os.path.join(FIG, name + ".jpg"), dpi=200, pil_kwargs={"quality": 92})
     plt.close(fig)
     print("saved", name)
@@ -136,7 +141,7 @@ def fig1():
         axC.scatter(h.axis_angle_deg, h.limb_length_px, s=9, color=VIEW_COL[view], label=VIEW_EN[view],
                     edgecolor="k", linewidth=0.2)
     axC.set_xlabel("Limb axis angle (°)")
-    axC.set_ylabel("Tip–base length (px)")
+    axC.set_ylabel("Tip–base length (px, log scale)")
     axC.set_yscale("log")
     axC.set_yticks([200, 500, 1000, 2000], ["200", "500", "1000", "2000"])
     axC.yaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
@@ -200,7 +205,7 @@ def fig2():
     axs[1].imshow(np.ma.masked_where(~m, g), cmap="viridis")
     axs[1].plot(tip[1], tip[0], "w*", ms=6, mec="k", mew=0.4)
     ss = a["s"]
-    for k, col in (("paw", "orange"), ("wrist", "red"), ("root", "white")):
+    for k, col in (("paw", "orange"), ("wrist", "red"), ("root", "dimgray")):
         axs[1].contour(np.isfinite(g) & (g <= ss[k]), levels=[0.5], colors=col, linewidths=0.7)
     ins = axs[1].inset_axes([0.0, -0.32, 1.0, 0.3])
     h = 3
@@ -208,9 +213,9 @@ def fig2():
     gi = np.floor(np.where(np.isfinite(g), g, -1) / h).astype(int)
     wd = ndi.gaussian_filter1d((np.bincount(gi[gi >= 0], minlength=len(bins))[:len(bins)] / h).astype(float), 2)
     ins.plot(bins / ss["max"], wd, color="k", lw=0.7)
-    for k, col in (("paw", "orange"), ("wrist", "red"), ("root", "gray")):
+    for k, col in (("paw", "orange"), ("wrist", "red"), ("root", "dimgray")):
         ins.axvline(ss[k] / ss["max"], color=col, lw=0.8)
-        ins.text(ss[k] / ss["max"], wd.max() * 1.02, k, color=col, fontsize=5.5, ha="center", va="bottom")
+        ins.text(ss[k] / ss["max"], wd.max() * 1.02, "base" if k == "root" else k, color=col, fontsize=5.5, ha="center", va="bottom")
     ins.set_xlabel("geodesic distance from tip (normalized)", fontsize=5.5, labelpad=1)
     ins.set_ylabel("width", fontsize=5.5, labelpad=1)
     ins.tick_params(labelsize=5, length=2, pad=1)
@@ -416,7 +421,8 @@ def fig4():
           [METH_COL[m] for m in M2], "Simulated TRE (% limb length)", log=True)
     nr = 100 * dfm.groupby(["image", "trial"]).nonrigid_tpl_px.first().median() / LM.TPL_LEN
     ax.axhline(nr, ls="--", lw=0.6, color="gray")
-    ax.text(len(M2) + 0.45, nr, "applied\nnon-rigid", fontsize=5, va="center", color="gray")
+    ax.text(0.99, 0.97, "--- median applied non-rigid\ndisplacement", transform=ax.transAxes, fontsize=5,
+            ha="right", va="top", color="gray")
     label(ax, "E", x=-0.07)
     ax = fig.add_subplot(gs[2, 3])
     cond = [("pose+photo", "Pose +\nphoto"), ("resolution", "Down-\nsample")]
@@ -424,8 +430,20 @@ def fig4():
           [t for _, t in cond], ["#9ecae1", "#9ecae1"], "Coordinate deviation (% L)", rot=0)
     label(ax, "F", x=-0.35)
     ax = fig.add_subplot(gs[2, 4])
-    placeholder(ax, "Landmark TRE vs.\ninter-rater variability\n(manual annotation;\npending)")
-    label(ax, "G", x=-0.05)
+    vdir = os.path.join(RES, "validation")
+    if os.path.exists(os.path.join(vdir, "tre_points.csv")):
+        tp = pd.read_csv(os.path.join(vdir, "tre_points.csv")).dropna(subset=["tre_pctL"])
+        ir = pd.read_csv(os.path.join(vdir, "interrater_landmarks.csv"))
+        boxes(ax, [tp[tp.method == m].tre_pctL.values for m in M],
+              ["Axis", "Similarity", "Affine", "TPS-arc", "TPS-DTW"], [METH_COL[m] for m in M],
+              "Landmark deviation (% L)", rot=60)
+        ax.axhline(ir.dist_pctL.median(), ls="--", lw=0.6, color="#d62728")
+        ax.text(0.98, 0.97, "--- inter-rater\n(median)", transform=ax.transAxes, fontsize=5, color="#d62728",
+                ha="right", va="top")
+        label(ax, "G", x=-0.35)
+    else:
+        placeholder(ax, "Landmark TRE vs.\ninter-rater variability\n(manual annotation;\npending)")
+        label(ax, "G", x=-0.05)
     save(fig, "Fig4")
 
 
@@ -454,7 +472,8 @@ def fig5():
         idx = np.digitize(d.peak_b, bins) - 1
         rec = [d.detected[idx == i].mean() if (idx == i).sum() >= 20 else np.nan for i in range(len(cen))]
         ax.plot(cen, rec, "-o", ms=2, lw=0.9, color=c, label=setl[k])
-    ax.axvline(g[g.setting == "auto_k4"].threshold.median(), color="#08519c", ls=":", lw=0.7)
+    ax.axvline(g[g.setting == "auto_k4"].threshold.median(), color="#08519c", ls=":", lw=0.7,
+               label="median threshold (k=4)")
     ax.set_zorder(ax2.get_zorder() + 1)
     ax.patch.set_visible(False)
     ax.set_xlabel("Peak blue index of spot")
@@ -486,7 +505,7 @@ def fig5():
     br = pd.concat([pose[pose.condition == "brightness"],
                     pose[pose.condition == "brightness"].iloc[0:0]])
     gains = sorted(br.gain.unique().tolist() + [1.0])
-    for col, c, l in (("dice_auto", "#08519c", "adaptive threshold"), ("dice_fixed", "#e6550d", "fixed threshold")):
+    for col, c, l in (("dice_auto", "#08519c", "adaptive threshold"), ("dice_fixed", "#e6550d", "fixed threshold\n(of unaltered photograph)")):
         mv, q1, q3 = [], [], []
         for gg in gains:
             v = br[br.gain == gg][col] if gg != 1.0 else pd.Series([1.0])
@@ -512,8 +531,24 @@ def fig5():
     ax.axvline(4, ls=":", color="gray", lw=0.6)
     label(ax, "E", x=-0.2)
     ax = fig.add_subplot(gs[1, 2])
-    placeholder(ax, "Automatic vs. manual spot\nidentification (precision,\nrecall, count ICC;\ntwo blinded raters; pending)")
-    label(ax, "F", x=-0.05)
+    sd_path = os.path.join(RES, "validation", "spot_detection.csv")
+    if os.path.exists(sd_path):
+        sd = pd.read_csv(sd_path)
+        for r, c, mk in (("R1", "#1f77b4", "o"), ("R2", "#ff7f0e", "^")):
+            s = sd[sd.annotator == r]
+            ax.scatter(s.n_rater, s.n_auto, s=6, color=c, marker=mk, lw=0, alpha=0.8,
+                       label=f"Rater {r[1]}")
+        mx = max(sd.n_rater.max(), sd.n_auto.max()) * 1.05
+        ax.plot([0, mx], [0, mx], "k--", lw=0.6)
+        ax.set_xlim(0, mx); ax.set_ylim(0, mx)
+        ax.set_xlabel("Spots marked by rater")
+        ax.set_ylabel("Spots detected automatically")
+        ax.legend(frameon=False, fontsize=5.5, loc="upper left")
+        ax.spines[["top", "right"]].set_visible(False)
+        label(ax, "F", x=-0.2)
+    else:
+        placeholder(ax, "Automatic vs. manual spot\nidentification (precision,\nrecall, count ICC;\ntwo blinded raters; pending)")
+        label(ax, "F", x=-0.05)
     save(fig, "Fig5")
 
 
@@ -565,7 +600,7 @@ def fig6():
         if crop[2] + 12 <= y <= crop[3] - 12:
             ax.text(crop[0] + 2, y, str(r + 1), fontsize=4.5, va="center", color="gray")
     frame(ax)
-    ax.legend(loc="lower right", fontsize=5.5, frameon=False, markerscale=1.5, handletextpad=0.2)
+    ax.legend(loc="lower left", fontsize=5.5, frameon=False, markerscale=1.5, handletextpad=0.2)
     ax.set_title("Spot centroids of all animals in template coordinates (TPS)", fontsize=6.5)
     label(ax, "B", x=0.02, y=1.04)
     im = None
